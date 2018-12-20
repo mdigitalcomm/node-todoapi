@@ -48,22 +48,14 @@ app.get('/todo/:id', (req, res) => {
 
   if (!ObjectID.isValid(id)) {
     return res.status(404).send();
-    console.log('Invalid ID.')
   }
 
   Todo.findById(id).then((todo) => {
-    if (todo) {
-      return res.send({todo});
+    if (!todo) {
+      return res.status(404).send();
     }
-    res.status(404).send();
-    console.log('User not found.')
-  }, e => {
-    res.status(400).send(e);
-  });
-
-
-
-
+    res.send({todo});
+  }).catch(e => res.status(400).send());
 });
 
 app.listen(3000, () => {
