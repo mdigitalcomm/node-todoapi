@@ -26,21 +26,21 @@ app.post('/todo', (req, res) => {
 
 });
 
-app.get('/todo', (req, res) => {
-  Todo.find().then((todo) => {
-    res.send({todo});
-  }, e => {
+app.post('/user', (req, res) => {
+  var body = _.pick(req.body, ['email', 'password']);
+  var user = new User(body);
+  user.save().then(() => {
+    return user.myGenerateAuthTokenMethod();
+  }).then(token => {
+    res.header('x-auth', token).send(user);
+  }).catch(e => {
     res.status(400).send(e);
   });
 });
 
-app.post('/user', (req, res) => {
-  var user = new User({
-    email: req.body.email
-  });
-
-  user.save().then((doc) => {
-    res.send(doc);
+app.get('/todo', (req, res) => {
+  Todo.find().then((todo) => {
+    res.send({todo});
   }, e => {
     res.status(400).send(e);
   });
