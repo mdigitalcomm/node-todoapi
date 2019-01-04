@@ -39,11 +39,10 @@ app.post('/user', (req, res) => {
   });
 });
 
-
-
 app.get('/user/me', authenticate, (req, res) => {
   res.send(req.user);
 });
+
 
 app.get('/todo', (req, res) => {
   Todo.find().then((todo) => {
