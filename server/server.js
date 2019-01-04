@@ -27,23 +27,6 @@ app.post('/todo', (req, res) => {
 
 });
 
-app.post('/user', (req, res) => {
-  var body = _.pick(req.body, ['email', 'password']);
-  var user = new User(body);
-  user.save().then(() => {
-    return user.myGenerateAuthTokenMethod();
-  }).then(token => {
-    res.header('x-auth', token).send(user);
-  }).catch(e => {
-    res.status(400).send(e);
-  });
-});
-
-app.get('/user/me', authenticate, (req, res) => {
-  res.send(req.user);
-});
-
-
 app.get('/todo', (req, res) => {
   Todo.find().then((todo) => {
     res.send({todo});
@@ -104,6 +87,22 @@ app.patch('/todo/:id', (req, res) => {
       res.send({todo});
     }).catch(e => res.status(400).send());
 
+});
+/* USER */
+app.post('/user', (req, res) => {
+  var body = _.pick(req.body, ['email', 'password']);
+  var user = new User(body);
+  user.save().then(() => {
+    return user.myGenerateAuthTokenMethod();
+  }).then(token => {
+    res.header('x-auth', token).send(user);
+  }).catch(e => {
+    res.status(400).send(e);
+  });
+});
+
+app.get('/user/me', authenticate, (req, res) => {
+  res.send(req.user);
 });
 
 app.listen(port, () => {

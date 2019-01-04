@@ -7,7 +7,7 @@ const {User} = require('./../../models/user');
 const userOneId = new ObjectID();
 const userTwoId = new ObjectID();
 
-const user = [{
+const users = [{
   _id: userOneId,
   email: 'user1@example.com',
   password: 'useronepass',
@@ -38,12 +38,13 @@ const populateTodo = (done) => {
 };
 
 const populateUser = (done) => {
-  User.remove({}).then(() => {
-    var userOne = new User(user[0]);
-    var userTwo = new User(user[1]);
-    return User.insertMany([userOne, userTwo]);
+  User.deleteMany({}).then(() => {
+    return new User(users[0]).save();
+    // return Promise.all([userOne, userTwo]);
+  }).then(() => {
+    new User(users[1]).save();
   }).then(() => done());
 };
 
 
-module.exports = {todo, populateTodo, user, populateUser};
+module.exports = {todo, populateTodo, users, populateUser};
