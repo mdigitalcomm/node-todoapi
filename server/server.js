@@ -88,6 +88,7 @@ app.patch('/todo/:id', (req, res) => {
     }).catch(e => res.status(400).send());
 
 });
+
 /* USER */
 app.post('/user', (req, res) => {
   var body = _.pick(req.body, ['email', 'password']);
@@ -103,6 +104,18 @@ app.post('/user', (req, res) => {
 
 app.get('/user/me', authenticate, (req, res) => {
   res.send(req.user);
+});
+
+// POST /user/login {email, password}
+app.post('/user/login', (req, res) => {
+  var body = _.pick(req.body, ['email', 'password']);
+  User.findByCredentials(body.email, body.password).then(user => {
+    return user.myGenerateAuthTokenMethod();
+  }).then(token => {
+    res.header('x-auth', token).send(user);
+  }).catch(e => {
+    res.status(400).send();
+  });
 });
 
 app.listen(port, () => {
